@@ -1,0 +1,65 @@
+version: "3.3"
+services:
+  database:
+    image: postgres:13.2-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_USER}
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+    volumes:
+      - ./db/fakes_pg.sql:/docker-entrypoint-initdb.d/fakes_pg.sql
+    ports:
+      - 5432:5432
+
+  odd-platform:
+    image: ghcr.io/opendatadiscovery/odd-platform:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      - database
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  config_generator:
+    build: .
+    environment:
+      - PLATFORM_HOST_URL=${PLATFORM_HOST_URL}
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./configs/:/opt/
+    depends_on:
+      odd-platform:
+        condition: service_healthy
+   
+  odd-collector:
+     image: ghcr.io/opendatadiscovery/odd-collector:test
+     volumes:
+       - ./configs/collector_config.yaml:/app/collector_config.yaml
+     environment:
+       - LOGLEVEL=DEBUG
+     depends_on:
+       config_generator:
+         condition: service_completed_successfully
+
+  odd-profiler:
+     image: ghcr.io/opendatadiscovery/odd-collector-profiler:test
+     volumes:
+       - ./configs/profiler_config.yaml:/app/collector_config.yaml
+     environment:
+       - LOGLEVEL=DEBUG
+     depends_on:
+       odd-collector:
+         condition: service_completed_successfully     
+      

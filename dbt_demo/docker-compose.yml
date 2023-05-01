@@ -1,0 +1,75 @@
+version: "3.9"
+
+services:
+  database:
+    image: postgres:13.2-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_USER}
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+    ports:
+      - 5432:5432
+  odd-platform:
+    image: ghcr.io/opendatadiscovery/odd-platform:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      - database
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+  sakila_database:
+    image: frantiseks/postgres-sakila
+    ports:
+      - 5433:5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      odd-platform:
+        condition: service_healthy
+
+  dbt:
+    container_name: odd_dbt
+    build: .
+    image: dbt-dummy
+    environment:
+      - ODD_PLATFORM_HOST=${PLATFORM_HOST_URL}
+    volumes:
+      - ./dbt_project:/usr/src/dbt/dbt_project
+    depends_on:
+      sakila_database:
+        condition: service_healthy
+
+  config_generator:
+    build: ./config_generator
+    environment:
+      - PLATFORM_HOST_URL=${PLATFORM_HOST_URL}
+      - SAKILA_POSTGRES_DATABASE=${SAKILA_POSTGRES_DATABASE}
+      - SAKILA_POSTGRES_HOST=${SAKILA_POSTGRES_HOST}
+      - SAKILA_POSTGRES_PORT=${SAKILA_POSTGRES_PORT}
+      - SAKILA_POSTGRES_USER=${SAKILA_POSTGRES_USER}
+      - SAKILA_POSTGRES_PASSWORD=${SAKILA_POSTGRES_PASSWORD}
+    volumes:
+      - ./configs/:/opt/
+    depends_on:
+      dbt:
+        condition: service_completed_successfully
+
+  odd-collector:
+    image: ghcr.io/opendatadiscovery/odd-collector:test
+    volumes:
+      - ./configs/collector_config.yaml:/app/collector_config.yaml
+    environment:
+      - LOGLEVEL=DEBUG
+    depends_on:
+      config_generator:
+        condition: service_completed_successfully

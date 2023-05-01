@@ -1,0 +1,12 @@
+chunk_size: 1000
+platform_host_url: http://odd-platform:8080
+plugins:
+- database: postgres
+  description: ''
+  host: sakila_database
+  name: postgres_adapter
+  password: postgres
+  port: '5432'
+  type: postgresql
+  user: postgres
+token: 8tW5qqUaNGo9GP2D0ZULwdLGPIc3aZgD9ZtBVrGw

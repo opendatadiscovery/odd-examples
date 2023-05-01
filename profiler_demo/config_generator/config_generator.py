@@ -1,9 +1,9 @@
 import os
-from uuid import uuid4
-from odd_models.api_client.v2.odd_api_client import Client
 import pathlib
-import yaml
+from uuid import uuid4
 
+import yaml
+from odd_models.api_client.v2.odd_api_client import Client
 
 platform_url = os.getenv("PLATFORM_HOST_URL", "http://odd-platform:8080")
 path = pathlib.Path().cwd()

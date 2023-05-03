@@ -15,4 +15,4 @@ RUN pip install odd-cli==0.1.22
 ARG ODD_PLATFORM_HOST
 
 # CMD ["/bin/bash", "-c", "build_and_test.sh"]
-ENTRYPOINT ["sh", "build_and_test.sh"]
+CMD ["sh", "build_and_test.sh"]

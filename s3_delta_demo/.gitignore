@@ -1,0 +1,6 @@
+src
+notebooks/.cache
+notebooks/.ipython
+notebooks/.local
+config/collector_config.yaml
+minio/.minio.sys

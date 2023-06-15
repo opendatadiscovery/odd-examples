@@ -1,0 +1,12 @@
+default_pulling_interval: 10
+token: #TOKEN#
+plugins:
+  - type: s3_delta
+    name: s3_adapter
+    endpoint_url: http://minio:9000
+    aws_storage_allow_http: True
+    aws_access_key_id: minioadmin
+    aws_secret_access_key: minioadmin
+    delta_tables:
+      - bucket: deltalake
+        prefix: accidents

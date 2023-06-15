@@ -67,7 +67,8 @@ services:
       - spark
     volumes:
       - ./minio:/data
-    command: server --console-address ":9001" /data
+    entrypoint: sh
+    command: -c 'mkdir -p /data/deltalake && minio server --console-address ":9001" /data'
 
   jupyter:
     image: jupyter/pyspark-notebook:spark-3.3.2

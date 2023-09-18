@@ -24,6 +24,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 3
+
   sakila_database:
     image: frantiseks/postgres-sakila
     ports:

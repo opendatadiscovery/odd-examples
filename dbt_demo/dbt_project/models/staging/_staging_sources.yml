@@ -4,3 +4,8 @@ sources:
   - name: public
     tables:
       - name: payment
+        columns:
+          - name: payment_id
+            tests:
+              - accepted_values:
+                  values: [ 1 ]

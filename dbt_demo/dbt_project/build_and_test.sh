@@ -1,6 +1,4 @@
 dbt build --profiles-dir profiles
-dbt run --profiles-dir profiles
-dbt test --profiles-dir profiles
 
 UNIQ_NAME="dbt_demo_$(uuidgen)"
 export ODD_COLLECTOR_TOKEN="$(odd tokens create $UNIQ_NAME)"

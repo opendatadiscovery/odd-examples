@@ -27,6 +27,15 @@ elementary:
       host: localhost
       user: postgres
       password: postgres
+      port: 5432
+      dbname: postgres
+      schema: public_elementary
+      threads: 1
+    local:
+      type: postgres
+      host: localhost
+      user: postgres
+      password: postgres
       port: 5433
       dbname: postgres
       schema: public_elementary

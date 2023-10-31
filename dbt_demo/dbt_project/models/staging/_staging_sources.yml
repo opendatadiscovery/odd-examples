@@ -4,6 +4,10 @@ sources:
   - name: public
     tables:
       - name: payment
+        config:
+          tags: [ 'PII' ]
+        tests:
+          - elementary.volume_anomalies
         columns:
           - name: payment_id
             tests:

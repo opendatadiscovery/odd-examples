@@ -19,3 +19,15 @@ test_profile:
       dbname: postgres
       schema: public
       threads: 1
+elementary:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: postgres
+      password: postgres
+      port: 5433
+      dbname: postgres
+      schema: public_elementary
+      threads: 1

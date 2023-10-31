@@ -7,7 +7,7 @@ WORKDIR /usr/src/dbt/dbt_project
 
 # Install the dbt Postgres adapter. This step will also install dbt-core
 RUN pip install --upgrade pip
-RUN pip install odd-cli==0.2.8
+RUN pip install odd-cli==0.2.9
 
 # Install dbt dependencies (as specified in packages.yml file)
 # Build seeds, models and snapshots (and run tests wherever applicable)

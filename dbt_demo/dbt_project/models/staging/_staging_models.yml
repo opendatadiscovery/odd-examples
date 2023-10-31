@@ -3,6 +3,10 @@ version: 2
 models:
   - name: stg_payment
     description: "Staging model consisting of payment events"
+    config:
+      tags: ['PII']
+      tests:
+        - elementary.volume_anomalies
     columns:
       - name: payment_id
         tests:
@@ -11,3 +15,4 @@ models:
       - name: customer_id
         tests:
           - not_null
+

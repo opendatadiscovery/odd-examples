@@ -44,7 +44,7 @@ services:
         condition: service_healthy
 
   odd-collector:
-    image: ghcr.io/opendatadiscovery/odd-collector:test
+    image: ghcr.io/opendatadiscovery/odd-collector:latest
     volumes:
       - ./configs/collector_config.yaml:/app/collector_config.yaml
     environment:
@@ -54,7 +54,7 @@ services:
         condition: service_completed_successfully
 
   odd-profiler:
-    image: ghcr.io/opendatadiscovery/odd-collector-profiler:test
+    image: ghcr.io/opendatadiscovery/odd-collector-profiler:latest
     volumes:
       - ./configs/profiler_config.yaml:/app/collector_config.yaml
     environment:

@@ -16,34 +16,36 @@ collector_config = {
     "token": token,
     "platform_host_url": platform_url,
     "chunk_size": 1000,
-    "plugins": [{
-    "type": "postgresql",
-    "name": "postgres_adapter",
-    "description": "",
-    "database": 'fake_pii',
-    "host": os.getenv("POSTGRES_HOST"),
-    "port": os.getenv("POSTGRES_PORT"),
-    "user": os.getenv("POSTGRES_USER"),
-    "password": os.getenv("POSTGRES_PASSWORD"),
-    }],
+    "plugins": [
+        {
+            "type": "postgresql",
+            "name": "postgres_adapter",
+            "description": "",
+            "database": "fake_pii",
+            "host": os.getenv("POSTGRES_HOST"),
+            "port": os.getenv("POSTGRES_PORT"),
+            "user": os.getenv("POSTGRES_USER"),
+            "password": os.getenv("POSTGRES_PASSWORD"),
+        }
+    ],
 }
 
 profiler_config = {
-    'token': token,
-    'platform_host_url': platform_url,
-    'profilers': [
+    "token": token,
+    "platform_host_url": platform_url,
+    "default_pulling_interval": 60,
+    "profilers": [
         {
-            'type': 'postgres',
-            'name': 'postgres_profiler',
-            'host': os.getenv("POSTGRES_HOST"),
-            'port': os.getenv("POSTGRES_PORT"),
-            'username': os.getenv('POSTGRES_USER'),
-            'password': os.getenv('POSTGRES_PASSWORD'),
-            'database': 'fake_pii'
+            "type": "postgres",
+            "name": "postgres_profiler",
+            "host": os.getenv("POSTGRES_HOST"),
+            "port": os.getenv("POSTGRES_PORT"),
+            "username": os.getenv("POSTGRES_USER"),
+            "password": os.getenv("POSTGRES_PASSWORD"),
+            "database": "fake_pii",
         }
-    ]
+    ],
 }
-
 
 
 with open(opt_path / "collector_config.yaml", "w") as f:
